@@ -1,0 +1,65 @@
+---
+title: "Assignment"
+author: "Jeff C."
+date: "2023-03-27"
+output: html_document
+---
+
+GITHUB REPO: https://github.com/jeffrcamp/Homework-7
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+  
+  
+Data cleaning: the values “IAP”, “DK” and “NA” all encode missing values. Replace all of these instances by the value NA.  
+
+```{r}
+HAPPY <- readRDS("data/HAPPY.rds")
+happiness = as.data.frame(HAPPY)
+
+happiness <- replace(happiness, happiness %in% c("IAP", "DK", "NA"), NA)
+```
+    
+Part one (cleaning)  
+  
+
+2. Check the type of the variable and cast into the right type (factor variable for categorical variables). For age, change “89 OR OLDER” to 89 and assume the variable should be numeric.
+
+```{r}
+happiness$AGE <- as.numeric(gsub("89 OR OLDER", "89", happiness$AGE))
+
+for(i in colnames(happiness)) {
+  if (!(i %in% c("AGE", "YEAR", "WTSSALL"))) {
+    i = factor(i)
+  }
+}
+```
+
+3. Bring all levels of factors into a sensible order. For marital you could e.g. order the levels according to average age.
+  
+  Done.
+
+
+Save the final data set as RDS file (binary R data) using the command:saveRDS  
+  
+```{r}
+saveRDS(happiness, file = "my_data.rds")
+```
+  
+Part two (individual exploration)
+
+Investigate the relationship between happiness and two other variables in the data. Find a visualization that captures the relationship and write a paragraph to describe it.
+
+
+```{r}
+library(ggplot2)
+ggplot(happiness, aes(x = AGE, y = HAPPY, color = SEX)) + 
+  geom_point(alpha = 0.5) +
+  labs(x = "Age", y = "Happiness", color = "Sex") +
+  theme_minimal()
+```
+  
+well, it seems that men and women span the dataset as a whole, bringing diversity as to who feels bad or good at any given time. This makes sense considering men and women at older and younger ages both go through bad things, so age and sex don't really have an effect on what makes people unhappy, at least according to the data. 
+
+Upload your answers and the dataset to the repository.
